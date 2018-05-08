@@ -22,11 +22,19 @@
               </router-link>
             </span>
           </el-menu-item>
-          <el-menu-item index="3" disabled>
+          <el-menu-item index="3">
+            <i class="el-icon-menu"></i>
+            <span slot="title">
+              <router-link to="/index/product-list" tag="span">
+                商品管理
+              </router-link>
+            </span>
+          </el-menu-item>
+          <el-menu-item index="4" disabled>
             <i class="el-icon-document"></i>
             <span slot="title">导航三</span>
           </el-menu-item>
-          <el-menu-item index="4">
+          <el-menu-item index="5">
             <i class="el-icon-setting"></i>
             <span slot="title">导航四</span>
           </el-menu-item>
@@ -57,5 +65,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
 .index
   .right
+    box-sizing: border-box;
     width: 100%;
+    padding: 30px 20px;
 </style>
