@@ -30,17 +30,17 @@
       </el-table-column>
       <el-table-column
         prop="price"
-        label="价格"
+        label="价格（元）"
         width="100">
       </el-table-column>
       <el-table-column
         prop="payNum"
-        label="销量"
+        label="总销量"
         width="100">
       </el-table-column>
       <el-table-column
         prop="stockNum"
-        label="库存"
+        label="库存（件）"
         width="100">
       </el-table-column>
       <el-table-column
@@ -49,7 +49,7 @@
         width="100">
         <template slot-scope="scope">
           <el-button @click="showDetail(scope.row.productId)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
+          <el-button @click="editProduct(scope.row.productId)" type="text" size="small">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -75,13 +75,19 @@ export default {
   },
   methods: {
     getProductList () {
-      Service.get_product_list().then(data => {
+      Service.get_all_product_list({
+        productId: this.productId,
+        keyword: this.keyword
+      }).then(data => {
         this.productList = data;
         console.log(this.productList);
       });
     },
     showDetail (productId) {
       this.$router.push(`/index/product-detail?productId=${productId}`);
+    },
+    editProduct (productId) {
+      this.$router.push(`/index/product-edit?productId=${productId}&type=2`);
     },
     addProduct () {
       this.$router.push('/index/product-edit?type=1');

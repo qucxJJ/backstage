@@ -8,11 +8,11 @@
       </li>
       <li>
         <label>单价</label>
-        <el-input v-model="product.price" placeholder="请输入商品单价"></el-input>
+        <el-input v-model="product.price" placeholder="请输入商品单价，单位：元"></el-input>
       </li>
       <li>
         <label>商品库存</label>
-        <el-input v-model="product.stockNum" placeholder="请输入商品库存"></el-input>
+        <el-input v-model="product.stockNum" placeholder="请输入商品库存，单位： 件"></el-input>
       </li>
       <li>
         <label>代表图片</label>
@@ -29,7 +29,7 @@
         <label>商品尺码</label>
         <el-tag
           v-for="(tag, index) in product.sizes"
-          :key="tag.name"
+          :key="index"
           closable
           @close="deleteSize(index)">
           {{tag}}
@@ -49,9 +49,10 @@
       <li>
         <label>商品参数</label>
         <el-tag
-          v-for="tag in product.params"
-          :key="tag"
-          closable>
+          v-for="(tag, index) in product.params"
+          :key="index"
+          closable
+          @close="deleteParam(index)">
           {{tag.name}}: {{tag.value}}
         </el-tag>
         <div class="add-btn" @click="paramDialogVisible = true">+</div>
@@ -144,6 +145,7 @@ export default {
     return {
       type: '1',
       config: config,
+      productId: '',
       product: {
         productName: '',
         price: '',
@@ -177,8 +179,23 @@ export default {
   },
   created () {
     this.type = this.$route.query.type;
+    if (this.type === '2') {
+      this.productId = this.$route.query.productId;
+      this.getProductDetail();
+    }
   },
   methods: {
+    getProductDetail () {
+      Service.get_all_product_detail({
+        productId: this.productId
+      }).then(data => {
+        this.product = data;
+      }).catch(res => {
+        Message.error({
+          message: res.errStr
+        });
+      });
+    },
     submitData () {
       let url = this.type === '1' ? 'add_product' : 'edit_product_info';
       if (!this.validateData()) {
@@ -188,7 +205,7 @@ export default {
         return;
       }
       console.log(this.product);
-      Service[url]({
+      let obj = {
         productName: this.product.productName,
         price: this.product.price,
         stockNum: this.product.stockNum,
@@ -201,10 +218,16 @@ export default {
           };
         }),
         params: this.product.params,
-        detailPics: this.product.detailPics
-      }).then(() => {
+        detailPics: this.product.detailPics.map(item => {
+          return item.response ? item.response.data : item.name;
+        })
+      };
+      if (this.type === '2') {
+        obj.productId = this.productId;
+      }
+      Service[url](obj).then(() => {
         Message.success({
-          message: '添加成功'
+          message: this.type === '1' ? '添加成功' : '修改成功'
         });
         this.$router.push('/index/product-list');
       }).catch(res => {
@@ -260,6 +283,9 @@ export default {
       this.product.detailPics = fileList;
       console.log(this.product.detailPics);
     },
+    deleteParam (index) {
+      this.product.params.splice(index, 1);
+    },
     handleAddParam () {
       if (!this.addParamInfo.name || !this.addParamInfo.value) {
         Message.error({
@@ -271,6 +297,7 @@ export default {
         name: this.addParamInfo.name,
         value: this.addParamInfo.value
       });
+      this.paramDialogVisible = false;
     },
     handleAddAttr () {
       if (!this.addAttrInfo.name || !this.addAttrInfo.image) {
@@ -284,7 +311,6 @@ export default {
         image: this.addAttrInfo.image,
         url: this.addAttrInfo.url
       });
-      console.log(this.product.attributes);
       this.attrDialogVisible = false;
     },
     handleAttrImgSuccess (res) {

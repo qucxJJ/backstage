@@ -3,7 +3,8 @@ import { factory } from '@/common/http-methods';
 let obj = {
   get: {
     get_category_list: '/categories/get_category_list',
-    get_product_list: '/products/get_product_list'
+    get_all_product_list: '/products/get_all_product_list',
+    get_all_product_detail: '/products/get_all_product_detail'
   },
   post: {
     login: '/admins/login',
