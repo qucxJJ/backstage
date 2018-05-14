@@ -50,6 +50,7 @@
         <template slot-scope="scope">
           <el-button @click="showDetail(scope.row.productId)" type="text" size="small">查看</el-button>
           <el-button @click="editProduct(scope.row.productId)" type="text" size="small">编辑</el-button>
+          <el-button type="text" size="small">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>

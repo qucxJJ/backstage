@@ -6,6 +6,7 @@ import Category from '@/pages/category/category.vue';
 import ProductList from '@/pages/product/product-list.vue';
 import ProductDetail from '@/pages/product/product-detail.vue';
 import ProductEdit from '@/pages/product/product-edit.vue';
+import Order from '@/pages/order/order.vue';
 
 Vue.use(Router);
 
@@ -18,6 +19,7 @@ export default new Router({
     {
       path: '/index',
       component: Index,
+      redirect: '/index/product-list',
       children: [
         {
           path: 'category',
@@ -34,6 +36,10 @@ export default new Router({
         {
           path: 'product-edit',
           component: ProductEdit
+        },
+        {
+          path: 'order',
+          component: Order
         }
       ]
     },
