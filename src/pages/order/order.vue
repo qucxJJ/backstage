@@ -94,7 +94,7 @@ export default {
         txt: '待收货'
       }, {
         code: 4,
-        txt: '待评价'
+        txt: '已完成'
       }, {
         code: 5,
         txt: '已取消'
