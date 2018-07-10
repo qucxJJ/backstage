@@ -56,6 +56,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page.sync="page"
+      :page-size="10"
+      layout="total, prev, pager, next"
+      :total="totalNum">
+    </el-pagination>
     <el-dialog
       title="确认发货"
       :visible.sync="dialogVisible"
@@ -74,6 +81,7 @@
 import TopHead from '@/components/head/head.vue';
 import Service from '@/api';
 import { Message } from 'element-ui';
+import { mapGetters } from 'vuex';
 export default {
   components: {
     TopHead
@@ -101,19 +109,43 @@ export default {
       }],
       sendOrder: '',
       dialogVisible: false,
-      expressNumber: ''
+      expressNumber: '',
+      page: 1,
+      totalNum: 0
     };
   },
+  computed: {
+    ...mapGetters([
+      'isLogin'
+    ])
+  },
   created () {
+    if (!this.isLogin) {
+      this.$router.push('/login');
+    }
     this.getOrderList();
   },
+  watch: {
+    isLogin (newVal) {
+      if (!newVal) {
+        this.$router.push('/login');
+      }
+    }
+  },
   methods: {
+    handleCurrentChange (page) {
+      this.page = page;
+      this.getOrderList();
+    },
     getOrderList () {
       Service.get_all_order_list({
         orderNumber: this.orderNumberInput,
-        status: this.statusInput
+        type: this.statusInput,
+        page: this.page - 1,
+        pageSize: 10
       }).then(data => {
-        this.orderList = data;
+        this.orderList = data.list;
+        this.totalNum = data.totalNum;
       }).catch(res => [
         Message.error({
           message: res.errStr

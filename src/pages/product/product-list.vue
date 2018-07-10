@@ -50,16 +50,23 @@
         <template slot-scope="scope">
           <el-button @click="showDetail(scope.row.productId)" type="text" size="small">查看</el-button>
           <el-button @click="editProduct(scope.row.productId)" type="text" size="small">编辑</el-button>
-          <el-button type="text" size="small">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page.sync="page"
+      :page-size="10"
+      layout="total, prev, pager, next"
+      :total="totalNum">
+    </el-pagination>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import TopHead from '@/components/head/head.vue';
 import Service from '@/api';
+import { mapGetters } from 'vuex';
 export default {
   components: {
     TopHead
@@ -68,20 +75,43 @@ export default {
     return {
       keyword: '',
       productId: '',
-      productList: []
+      productList: [],
+      page: 1,
+      totalNum: 0
     };
   },
   created () {
+    if (!this.isLogin) {
+      this.$router.push('/login');
+    }
     this.getProductList();
   },
+  computed: {
+    ...mapGetters([
+      'isLogin'
+    ])
+  },
+  watch: {
+    isLogin (newVal) {
+      if (!newVal) {
+        this.$router.push('/login');
+      }
+    }
+  },
   methods: {
+    handleCurrentChange (page) {
+      this.page = page;
+      this.getProductList();
+    },
     getProductList () {
       Service.get_all_product_list({
         productId: this.productId,
-        keyword: this.keyword
+        keyword: this.keyword,
+        page: this.page - 1,
+        pageSize: 10
       }).then(data => {
-        this.productList = data;
-        console.log(this.productList);
+        this.productList = data.list;
+        this.totalNum = data.totalNum;
       });
     },
     showDetail (productId) {

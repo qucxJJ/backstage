@@ -137,6 +137,7 @@ import TopHead from '@/components/head/head.vue';
 import config from '@/common/js/config';
 import { Message } from 'element-ui';
 import Service from '@/api';
+import { mapGetters } from 'vuex';
 export default {
   components: {
     TopHead
@@ -178,11 +179,19 @@ export default {
     };
   },
   created () {
+    if (!this.isLogin) {
+      this.$router.push('/login');
+    }
     this.type = this.$route.query.type;
     if (this.type === '2') {
       this.productId = this.$route.query.productId;
       this.getProductDetail();
     }
+  },
+  computed: {
+    ...mapGetters([
+      'isLogin'
+    ])
   },
   methods: {
     getProductDetail () {
@@ -352,6 +361,11 @@ export default {
       if (!newVal) {
         this.addParamInfo.name = '';
         this.addParamInfo.value = '';
+      }
+    },
+    isLogin (newVal) {
+      if (!newVal) {
+        this.$router.push('/login');
       }
     }
   }

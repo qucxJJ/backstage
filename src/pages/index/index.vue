@@ -36,6 +36,7 @@
       </el-col>
       <el-col :span="20">
         <div class="right">
+          <div class="user">欢迎{{userName}},<span class="logout" @click="logout">退出</span></div>
           <router-view></router-view>
         </div>
       </el-col>
@@ -44,14 +45,28 @@
 </template>
 
 <script type="text/ecmascript-6">
+import { mapGetters, mapMutations } from 'vuex';
 export default {
+  computed: {
+    ...mapGetters([
+      'userName'
+    ])
+  },
   methods: {
     handleOpen (key, keyPath) {
       console.log(key, keyPath);
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath);
-    }
+    },
+    logout () {
+      this.setUserName('');
+      this.setIsLogin(false);
+    },
+    ...mapMutations({
+      setUserName: 'SET_USER_NAME',
+      setIsLogin: 'SET_IS_LOGIN'
+    })
   }
 };
 </script>
@@ -72,4 +87,9 @@ export default {
     box-sizing: border-box;
     width: 100%;
     padding: 30px 20px;
+    .user
+      margin-bottom: 15px;
+      font-size: 14px;
+      .logout
+        cursor: pointer;
 </style>

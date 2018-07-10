@@ -53,6 +53,7 @@
 import TopHead from '@/components/head/head.vue';
 import Service from '@/api';
 import { Message } from 'element-ui';
+import { mapGetters } from 'vuex';
 export default {
   data () {
     return {
@@ -75,7 +76,15 @@ export default {
     TopHead
   },
   created () {
+    if (!this.isLogin) {
+      this.$router.push('/login');
+    }
     this.getCategoryList();
+  },
+  computed: {
+    ...mapGetters([
+      'isLogin'
+    ])
   },
   methods: {
     addCate () {
@@ -163,6 +172,11 @@ export default {
     showAddCateDialog (newVal) {
       if (!newVal) {
         this.addCateInfo = '';
+      }
+    },
+    isLogin (newVal) {
+      if (!newVal) {
+        this.$router.push('/login');
       }
     }
   }

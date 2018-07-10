@@ -59,6 +59,7 @@
 import TopHead from '@/components/head/head.vue';
 import Service from '@/api';
 import { Message } from 'element-ui';
+import { mapGetters } from 'vuex';
 export default {
   components: {
     TopHead
@@ -70,8 +71,23 @@ export default {
     };
   },
   created () {
+    if (!this.isLogin) {
+      this.$router.push('/login');
+    }
     this.productId = this.$route.query.productId;
     this.getProductDetail();
+  },
+  computed: {
+    ...mapGetters([
+      'isLogin'
+    ])
+  },
+  watch: {
+    isLogin (newVal) {
+      if (!newVal) {
+        this.$router.push('/login');
+      }
+    }
   },
   methods: {
     getProductDetail () {

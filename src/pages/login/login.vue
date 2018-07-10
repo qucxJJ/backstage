@@ -139,7 +139,7 @@ export default {
           text-align: center;
           cursor: pointer;
           color: #fff;
-          background: #c60023;
+          background: #409eff;
         .link-con
           text-align: right;
           .link
